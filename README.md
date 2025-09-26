@@ -22,7 +22,7 @@ Calendary AI is a minimal web demo that ingests a meeting-request email, inspect
    - Configure OAuth consent (internal/testing) and create OAuth client credentials (web application).
    - Set authorized origins/redirects:
      - Origin: `http://localhost:3000`
-     - Redirect: `http://localhost:3000/api/auth/google/callback`
+     - Redirect: `http://localhost:3000/api/auth/google`
    - Download the client secret JSON and place it at `config/google-client-secret.json` (never commit).
 
 3. **Environment variables** — create `.env.local`:
@@ -113,7 +113,6 @@ Future functionality (e.g., creating holds) would require `https://www.googleapi
 
 - `config/google-client-secret.json`: Developer-provided OAuth credentials (gitignored).
 - `./data/tokens`: Encrypted JSON tokens keyed by user session. For production, migrate to OS keychain or managed secret store.
-- `prompts/gemini-meeting-planner.json`: Prompt template for Gemini (non-sensitive). Adjust to tune AI behavior.
 
 ## Demo Flow
 
@@ -129,19 +128,6 @@ Future functionality (e.g., creating holds) would require `https://www.googleapi
 
 See `docs/webhooks.md` (to be authored) for calendar/email webhook design: subscription endpoints, security validation, and data minimization.
 
-## Roadmap & Nice-to-Haves
-
-- “What I can see and why” transparency panel.
-- Unit tests for `lib/timePlanner.ts` covering overlaps, edge cases, timezone handling.
-- Optional AI-assisted reply tone personalization (local or privacy-safe API).
-- Settings surface to view or revoke Gemini consent.
-
-## Deployment Notes
-
-- Deploy on Vercel or Node host; ensure environment variables and secrets are configured.
-- Enforce HTTPS and secure cookies in production.
-- Document token revocation instructions for end-users.
-
 ## Optional Gemini Integration
 
 Calendary can optionally call Google’s Gemini 2.x models to draft the email reply and refine slot suggestions. The feature is off by default and requires:
@@ -149,7 +135,7 @@ Calendary can optionally call Google’s Gemini 2.x models to draft the email re
 1. **Env configuration**: add to `.env.local`
    ```bash
    GEMINI_API_KEY=your-gemini-api-key
-   GEMINI_MODEL=gemini-2.0-flash-latest
+   GEMINI_MODEL=gemini-2.5-flash-latest
    GEMINI_FEATURE_ENABLED=true
    ```
 2. **User consent**: the UI surfaces a disclosure modal explaining that email content and proposed slots will be sent to Google’s Gemini API and are retained per Google’s policy (up to 30 days for abuse prevention). Consent is stored in a cookie and can be reset by disconnecting.
