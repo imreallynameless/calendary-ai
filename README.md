@@ -45,29 +45,29 @@ Calendary AI is a minimal web demo that ingests a meeting-request email, inspect
 ```mermaid
 flowchart LR
     subgraph Browser
-        UI[Messaging UI]
+        ui[Messaging UI]
     end
-    subgraph NextServer[Next.js Server]
-        AuthRoute[/api/auth/google]
-        AvailabilityRoute[/api/availability]
-        TimePlanner[lib/timePlanner]
-        GoogleClient[lib/googleClient]
-        TokenStore[Encrypted token storage]
+    subgraph Server[Next.js Server]
+        authRoute[/api/auth/google/]
+        availabilityRoute[/api/availability/]
+        timePlannerNode[lib/timePlanner]
+        googleClientNode[lib/googleClient]
+        tokenStoreNode[Encrypted token storage]
     end
-    subgraph Google
-        OAuth[Google OAuth 2.0]
-        CalendarAPI[Calendar API]
+    subgraph GoogleCloud[Google APIs]
+        oauthNode[Google OAuth 2.0]
+        calendarApiNode[Calendar API]
     end
 
-    UI -- paste email, request proposals --> AvailabilityRoute
-    UI -- trigger OAuth --> AuthRoute
-    AuthRoute -- exchange code --> OAuth
-    AuthRoute -- store refresh token --> TokenStore
-    AvailabilityRoute --> GoogleClient
-    GoogleClient -- freebusy.query --> CalendarAPI
-    AvailabilityRoute --> TimePlanner
-    TimePlanner -- proposed slots --> AvailabilityRoute
-    AvailabilityRoute -- reply draft + slots --> UI
+    ui -- "paste email, request proposals" --> availabilityRoute
+    ui -- "trigger OAuth" --> authRoute
+    authRoute -- "exchange code" --> oauthNode
+    authRoute -- "store refresh token" --> tokenStoreNode
+    availabilityRoute --> googleClientNode
+    googleClientNode -- "freebusy.query" --> calendarApiNode
+    availabilityRoute --> timePlannerNode
+    timePlannerNode -- "proposed slots" --> availabilityRoute
+    availabilityRoute -- "reply draft + slots" --> ui
 ```
 
 ### Components
