@@ -2,54 +2,35 @@
 
 ## “What I Can See and Why” Panel
 
-### Goal
+### Status
 
-Increase user trust by surfacing exactly what data the assistant ingests, how long it is retained, and why it is needed.
+✅ Implemented in `app/page.tsx` as the “Privacy First” tab. The accordion outlines local-only processing for the standard draft and highlights data sent when choosing Gemini.
 
-### Concept
+### Notes
 
-- Add a sidebar or modal accessible from the chat interface (e.g., “Privacy & Access”).
-- Display a checklist of data categories with brief rationale:
-  - Email contents (only when pasted, discarded after response generation).
-  - Google Calendar busy intervals (fetched via `freebusy.query`, not stored).
-  - OAuth tokens (encrypted locally for refresh).
-- Provide quick actions:
-  - Revoke calendar access (link to Google security settings).
-  - Clear conversation history (reset local state).
-  - Download audit of last generated reply (optional future feature).
-
-### Implementation Notes
-
-- Use Mantine/MUI Drawer or Dialog component triggered from the header.
-- Content derived from README/Privacy model; ensure UI stays in sync with documentation.
-- Consider adding session-level analytics (locally) so the panel can confirm “No data sent to third parties.”
+- Uses MUI `Accordion` inside a dedicated view toggle.
+- Surfaces components with icons, copy describing what data stays local versus what gets uploaded to Gemini.
+- Consent reminder appears via modal when users opt into Gemini drafting.
 
 ## Unit Tests for Time Proposal Logic
 
-### Scope
+### Status
 
-- Validate `timePlanner` utility against business rules:
-  - Avoid overlapping busy slots.
-  - Respect requested duration and working hours.
-  - Handle timezone offsets consistently.
-  - Skip slots outside preferred date range extracted from email.
+✅ Implemented with Vitest in `lib/timePlanner.test.ts`.
 
-### Testing Strategy
+### Coverage
 
-- Create `lib/timePlanner.test.ts` using Vitest or Jest (Next.js supports both).
-- Mock calendar busy data and email-derived constraints.
-- Include edge cases:
-  - All-day events blocking scheduling window.
-  - Meetings crossing midnight/timezone boundaries.
-  - Request specifying multiple preferred days.
-- Ensure deterministic outputs (sort candidate slots, use fixed reference date).
+- Ensures generated slots snap to 15-minute increments within work hours.
+- Enforces morning-only time-of-day preferences.
+- Confirms busy intervals are excluded.
 
 ### Tooling
 
-- Add testing library (e.g., `vitest`, `@testing-library/react`, `@testing-library/jest-dom`) if not already present.
-- Update `package.json` scripts (`"test": "vitest run"`, `"test:watch": "vitest"`).
+- Vitest configured via `vitest.config.ts`.
+- `npm run test` executes the suite; `npm run test:watch` for development.
 
-## Recommendation
+## Remaining Ideas
 
-- **Panel**: Medium effort, high UX value; implement once core flows are stable.
-- **Tests**: High importance for reliability; prioritize once `timePlanner` module is drafted. Consider TDD for parsing logic.
+- Expand tests to cover preference windows with overlaps and multiple busy blocks.
+- Add UI integration tests ( Playwright/Cypress ) if we wire up CI.
+- Consider storing user consent state beyond cookies for multi-device sync.
